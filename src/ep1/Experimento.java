@@ -67,33 +67,19 @@ public class Experimento {
                                                             fitness,
                                                             selecaoAleatoria,
                                                             cruzamento,
-                                                            mutacao
+                                                            mutacao,
+                                                            new EscritorDeExperimento("AAA")
                                                             );
         
-        LinkedList<Cromossomo> populacao = gerarPopulacaoAleatoria(4000, 20);
-        
-        Cromossomo individuo = algoritmo.gerarIndividuoApto(populacao);
-        
-        System.out.println(individuo + "(" + individuo.obterValorInteiroDoPrimeiro() + ", "
-                + individuo.obterValorInteiroDoSegundo() + ") => " + fitness.calcularFitness(individuo));
-        
-        /*for(int i = 0; i < populacao.size(); i++) {
-        
-            Cromossomo selecionado = populacao.get(i);
-            System.out.println(selecionado + " => " + fitness.calcularFitness(selecionado));
-            
+        for(int i = 0; i < 1; i++) {
+            LinkedList<Cromossomo> populacao = gerarPopulacaoAleatoria(4000, 20);
+
+            Cromossomo individuo = algoritmo.gerarIndividuoApto(populacao);
+
+            System.out.println(individuo + "(" + individuo.obterValorInteiroDoPrimeiro() + ", "
+                    + individuo.obterValorInteiroDoSegundo() + ") => " + fitness.calcularFitness(individuo) + "\n\n");
+
         }
-        
-        System.out.println("\n\n");
-        
-        for(int i = 0; i < 20; i++) {
-        
-            Cromossomo selecionado = selecaoAleatoria.selecionarIndividuo(populacao);
-            System.out.println(selecionado + " => " + fitness.calcularFitness(selecionado));
-            
-        }*/
-        
-        
     }
     
     

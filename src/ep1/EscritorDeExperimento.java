@@ -20,6 +20,17 @@ public class EscritorDeExperimento implements Closeable {
     
     private FileWriter escritor;
     
+    private final String CODIGO_DO_EXPERIMENTO;
+    
+    public EscritorDeExperimento(String codigoDoExperimento) {
+        
+        if(!codigoDoExperimento.matches(this.regexCodigo)) {
+            throw new IllegalArgumentException("O codigo do experimento deve estar no formato: " + this.regexCodigo);
+        }
+        
+        this.CODIGO_DO_EXPERIMENTO = codigoDoExperimento;
+    }
+    
     
     @Override
     public void close() throws IOException {
@@ -68,10 +79,6 @@ public class EscritorDeExperimento implements Closeable {
     }
     
     private String gerarNomeParaOExperimento(String codigoDoExperimento) {
-    
-        if(!codigoDoExperimento.matches(this.regexCodigo)) {
-            throw new IllegalArgumentException("O codigo do experimento deve estar no formato: " + this.regexCodigo);
-        }
         
         LinkedList<String> listaDeNomesCriados = this.obterNomeDeArquivosEm(this.caminho);
         int proximoNumero = this.proximoNumero(listaDeNomesCriados);
@@ -84,14 +91,12 @@ public class EscritorDeExperimento implements Closeable {
         return nome;
     }
     
-    public void iniciarEscrita(String codigoDoExperimento) {
+    public void iniciarEscrita() {
     
-        String nomeDoArquivo = this.gerarNomeParaOExperimento(codigoDoExperimento);
+        String nomeDoArquivo = this.gerarNomeParaOExperimento(this.CODIGO_DO_EXPERIMENTO);
         
-        System.out.println(nomeDoArquivo);
         File arquivo = new File(this.caminho + nomeDoArquivo);
-        
-        
+               
         try {
             this.escritor = new FileWriter(arquivo, false);
         } catch(IOException ioe) {
@@ -124,8 +129,8 @@ public class EscritorDeExperimento implements Closeable {
         number = formatter.format(-1234.567);
         System.out.println("Number 1: " + number);*/
         
-        EscritorDeExperimento a = new EscritorDeExperimento();
-        a.iniciarEscrita("AAA");
+        EscritorDeExperimento a = new EscritorDeExperimento("AAA");
+        a.iniciarEscrita();
 
         
         try {
