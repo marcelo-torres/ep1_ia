@@ -49,9 +49,9 @@ public class Experimento {
         double precisao = 0.01;
         int tamanhoDoTorneio = 3;
         double porcentagemMaximaDeAlteracaoDoDNA = 0.25;
-        double chanceDeCruzamento = 0.85;
+        double chanceDeCruzamento = 1;
         double chanceDeMutacao = 0.1;
-        int limiteDeGeracoes = 500;
+        int limiteDeGeracoes = 200;
         
         
         Fitness fitness = new Rastrigins(precisao);
@@ -70,7 +70,7 @@ public class Experimento {
                                                             mutacao
                                                             );
         
-        LinkedList<Cromossomo> populacao = gerarPopulacaoAleatoria(1000, 20);
+        LinkedList<Cromossomo> populacao = gerarPopulacaoAleatoria(4000, 20);
         
         Cromossomo individuo = algoritmo.gerarIndividuoApto(populacao);
         

@@ -7,6 +7,8 @@ public class Cromossomo {
     
     private final boolean [] GENES;
     
+    private int quantidadeDeVezesSelecionado;
+    
     public Cromossomo(int tamanho) {
         this.GENES = new boolean[tamanho];
     }
@@ -55,6 +57,15 @@ public class Cromossomo {
     
     public int quantidadeDeGenes() {
         return this.GENES.length;
+    }
+    
+    
+    public void incrementarVezesSelecionado() {
+        this.quantidadeDeVezesSelecionado++;
+    }
+    
+    public int vezesSelecionado() {
+        return this.quantidadeDeVezesSelecionado;
     }
     
     

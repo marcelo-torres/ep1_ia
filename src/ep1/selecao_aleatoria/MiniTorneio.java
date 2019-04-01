@@ -24,15 +24,15 @@ public class MiniTorneio implements SelecaoAleatoria {
     
     @Override
     public Cromossomo selecionarIndividuo(Collection<Cromossomo> populacao) {
-        
+ 
         int[] listaDePosicoes = this.sortearNumeros(this.K, 0, populacao.size() - 1);
-        
+
         double fitnessMelhor = 0;
         Cromossomo melhorIndividuo = null;
-        
+
         Iterator<Cromossomo> iterador = populacao.iterator();
         int i = 0;
-        
+
         int j = 0;
         while(i < listaDePosicoes.length) {
             while(j < listaDePosicoes[i] && iterador.hasNext()) {
@@ -41,7 +41,7 @@ public class MiniTorneio implements SelecaoAleatoria {
             }
             j++;
             i++;
-            
+
             if(iterador.hasNext()) {
                 Cromossomo individuo = iterador.next();
 
@@ -51,9 +51,11 @@ public class MiniTorneio implements SelecaoAleatoria {
                 }
             }
         }
-        
+            
+        melhorIndividuo.incrementarVezesSelecionado();
         return melhorIndividuo;
     }
+
     
     private int[] sortearNumeros(int quantidade, int inicioIntervalo, int fimIntervalo) {
     

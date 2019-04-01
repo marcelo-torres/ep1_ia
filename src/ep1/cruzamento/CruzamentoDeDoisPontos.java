@@ -22,7 +22,6 @@ public class CruzamentoDeDoisPontos implements Cruzamento {
         pontoPrimeiro = aleatorio.nextInt(progenitorPrimeiro.quantidadeDeGenes());
         pontoSegundo = aleatorio.nextInt(progenitorPrimeiro.quantidadeDeGenes() - pontoPrimeiro) + pontoPrimeiro;
         
-        
         // Criacao do novo DNA
         
         boolean[] DNA = new boolean[progenitorPrimeiro.quantidadeDeGenes()];
