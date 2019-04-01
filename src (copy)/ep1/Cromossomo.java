@@ -27,23 +27,6 @@ public class Cromossomo {
     }
     
     
-    @Override
-    public String toString() {
-        String s = "[";
-        
-        for(int i = this.GENES.length - 1; i >= 0; i--) {
-            boolean gene = this.GENES[i];
-            if(gene) {
-                s += '1';
-            } else {
-                s += '0';
-            }
-        }
-        
-        return s + "]";
-    }
-    
-    
     public boolean obterGeneDe(int locus) {
         return this.GENES[locus];
     }
@@ -74,19 +57,11 @@ public class Cromossomo {
         return soma; 
     }
     
-    private double calcularValorReal(int inicio, int fim) {
-        
-        int valorInteiro = this.converterParaInteiro(inicio, fim);
-        double valorReal = (valorInteiro * 0.00978) - 5;
-        
-        return valorReal;
+    public int obterValorInteiroDoPrimeiro() {
+        return this.converterParaInteiro(0, (this.GENES.length/2) - 1);
     }
     
-    public double obterValorInteiroDoPrimeiro() {
-        return this.calcularValorReal(0, (this.GENES.length/2) - 1);
-    }
-    
-    public double obterValorInteiroDoSegundo() {
-        return this.calcularValorReal(this.GENES.length/2, (this.GENES.length) - 1);
+    public int obterValorInteiroDoSegundo() {
+        return this.converterParaInteiro(this.GENES.length/2, (this.GENES.length) - 1);
     }
 }

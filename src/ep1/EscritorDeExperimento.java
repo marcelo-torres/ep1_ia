@@ -1,41 +1,30 @@
 package ep1;
 
+import ep1.fitness.Rastrigins;
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
-import javax.swing.JFileChooser;
 
-public class EscritorDeExperimento {
+public class EscritorDeExperimento implements Closeable {
     
     private final NumberFormat FORMATADOR = new DecimalFormat("000");
-    
     private final String PREFIXO = "simulacao_";
-    
-    private final String regex = "[a-zA-Z_0-9]+" + "_" + "[0-9]+";
+    private final String regexCodigo = "[A-Z]{3}";
     
     private static final String caminho = "/home/marcelo/Desktop/dadosDeExperimentos/";
     
     private FileWriter escritor;
     
     
-    public EscritorDeExperimento(String codigoDoExperimento) {
-        
-        try {
-            File raiz = new File(caminho);
-            
-            for(File f: raiz.listFiles()) {
-                if(f.isFile()) {
-                    System.out.println(f.getName());
-                }
-            }
-            
-        } catch(Error e) {
-            
+    @Override
+    public void close() throws IOException {
+        if(escritor != null) {
+            escritor.close();
         }
     }
     
@@ -61,9 +50,12 @@ public class EscritorDeExperimento {
         int maiorNumero = 0;
         
         for(String arquivo : listaDeNomesCriados) {
-            char primeiroDigito = arquivo.charAt(13);
-            char segundoDigito = arquivo.charAt(14);
-            char terceiroDigito = arquivo.charAt(15);
+            if(arquivo.length() < 17) {
+                continue;
+            }
+            char primeiroDigito = arquivo.charAt(14);
+            char segundoDigito = arquivo.charAt(15);
+            char terceiroDigito = arquivo.charAt(16);
             
             int numero = Integer.valueOf(primeiroDigito + "" + segundoDigito + terceiroDigito);
             
@@ -77,37 +69,52 @@ public class EscritorDeExperimento {
     
     private String gerarNomeParaOExperimento(String codigoDoExperimento) {
     
+        if(!codigoDoExperimento.matches(this.regexCodigo)) {
+            throw new IllegalArgumentException("O codigo do experimento deve estar no formato: " + this.regexCodigo);
+        }
+        
         LinkedList<String> listaDeNomesCriados = this.obterNomeDeArquivosEm(this.caminho);
         int proximoNumero = this.proximoNumero(listaDeNomesCriados);
         
         String nome = this.PREFIXO
                       + codigoDoExperimento 
-                      + "_" + this.FORMATADOR.format(proximoNumero);
+                      + "_" + this.FORMATADOR.format(proximoNumero)
+                      + ".csv";
         
         return nome;
     }
     
-    public void iniciarEscrita() {
+    public void iniciarEscrita(String codigoDoExperimento) {
     
-        //this.escritor = new FileWriter();
+        String nomeDoArquivo = this.gerarNomeParaOExperimento(codigoDoExperimento);
         
-    }
-    
-    public void salvarEscrita() {
+        System.out.println(nomeDoArquivo);
+        File arquivo = new File(this.caminho + nomeDoArquivo);
+        
+        
         try {
-            this.escritor.close();
+            this.escritor = new FileWriter(arquivo, false);
         } catch(IOException ioe) {
-            throw new RuntimeException("Nao foi possivel fechar o arquivo: " + ioe.getMessage());
+            throw new RuntimeException("Erro ao criar escritor do arquivo: " + ioe);
+        }
+        
+    } 
+    
+    public void escrever(String s) {
+        try {
+            this.escritor.write(s);
+        } catch(IOException ioe) {
+            throw new RuntimeException("Nao foi possivel escrever no arquivo: " + ioe.getMessage());
         }
     }
-    
     
     public static void main(String[] args) {
         //new EscritorDeExperimento("");
         
-        String s = "ccc_00000";
+        /*String s = "ccc_00000";
         
         System.out.println(s.matches("[a-zA-Z_0-9]+_[0-9]{5}"));
+        
         
         NumberFormat formatter;
         String number;
@@ -115,6 +122,32 @@ public class EscritorDeExperimento {
         // 0 --> a digit or 0 if no digit present
         formatter = new DecimalFormat("00000");
         number = formatter.format(-1234.567);
-        System.out.println("Number 1: " + number);
+        System.out.println("Number 1: " + number);*/
+        
+        EscritorDeExperimento a = new EscritorDeExperimento();
+        a.iniciarEscrita("AAA");
+
+        
+        try {
+            a.escrever("aaa");
+            a.close();
+        } catch(IOException ioe) {
+            ioe.printStackTrace();
+        }
+        
+        boolean T = true;
+        boolean F = false;
+        boolean[] dna = {T, T, T, T, T, T, T, T, T, T, 
+                         F, F, F, F, F, F, F, F, F, F};
+        
+        Cromossomo c = new Cromossomo(dna);
+        
+        dna = new boolean[]{T, T, F, F, F, F, F, F, F, F, 
+                            F, T, F, F, F, F, F, F, F, F};
+        
+        System.out.println(c.obterValorInteiroDoPrimeiro() + ", "
+                            + c.obterValorInteiroDoSegundo() + " = " 
+                            + new Rastrigins(0.001).calcularFitness(c));
     }
+
 }

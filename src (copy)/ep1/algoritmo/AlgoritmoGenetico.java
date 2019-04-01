@@ -44,9 +44,8 @@ public class AlgoritmoGenetico {
     
         Cromossomo individuoApto = null;
         int geracao = 0;
-        int quantidadeDeMutacoes = 0;
         
-        while(!this.FITNESS.individuoApto(individuoApto) && geracao < this.LIMITE_DE_GERACOES) {
+        while(individuoApto == null && geracao < this.LIMITE_DE_GERACOES) {
             
             Collection<Cromossomo> populacaoNova = new ArrayList<>(populacao.size());
             
@@ -61,7 +60,6 @@ public class AlgoritmoGenetico {
                     filho = this.CRUZAMENTO.cruzar(progenitorPrimeiro, progenitorSegundo);
                     if(this.sortearChance(this.CHANCE_DE_MUTACAO)) {
                         this.MUTACAO.mutar(filho);
-                        quantidadeDeMutacoes++;
                     }
                 } else {
                     filho = this.SELECAO_ALEATORIA.selecionarIndividuo(populacao);
@@ -74,24 +72,11 @@ public class AlgoritmoGenetico {
             geracao++;
             
             Cromossomo individuoMaisApto = this.procurarMaisApto(populacao);
-            
-            System.out.println(this.FITNESS.calcularFitness(individuoMaisApto));
-            
-            /*boolean individuoEhApto = this.FITNESS.individuoApto(individuoMaisApto);
+            boolean individuoEhApto = this.FITNESS.individuoApto(individuoMaisApto);
             if(individuoEhApto) {
                 individuoApto = individuoMaisApto;
-            }*/
-            if(individuoApto == null) {
-                individuoApto = individuoMaisApto;
-            } else {
-                if(this.FITNESS.calcularFitness(individuoMaisApto) > this.FITNESS.calcularFitness(individuoApto)) {
-                    individuoApto = individuoMaisApto;
-                }
             }
         }
-        
-        System.out.println("Quantidade de geracoes: " + geracao + "\n"
-                         + "Quantidade de mutacoes: " + quantidadeDeMutacoes);
         
         return individuoApto;
     }
@@ -106,11 +91,11 @@ public class AlgoritmoGenetico {
     
         Iterator<Cromossomo> iterador = populacao.iterator();
         Cromossomo individuoMaisApto = iterador.next();
-        double melhorFitness = this.FITNESS.calcularFitness(individuoMaisApto);
+        int melhorFitness = this.FITNESS.calcularFitness(individuoMaisApto);
         
         while(iterador.hasNext()) {
             Cromossomo individuo = iterador.next();
-            double fitness = this.FITNESS.calcularFitness(individuo);
+            int fitness = this.FITNESS.calcularFitness(individuo);
             
             if(fitness > melhorFitness) {
                 individuoMaisApto = individuo;
