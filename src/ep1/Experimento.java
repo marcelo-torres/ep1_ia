@@ -1,6 +1,7 @@
 package ep1;
 
 import ep1.algoritmo.AlgoritmoGenetico;
+import ep1.algoritmo.AlgoritmoGenetico.Retorno;
 import ep1.cruzamento.Cruzamento;
 import ep1.cruzamento.CruzamentoDeDoisPontos;
 import ep1.fitness.Fitness;
@@ -51,16 +52,27 @@ public class Experimento {
         double porcentagemMaximaDeAlteracaoDoDNA = 0.25;
         double chanceDeCruzamento = 1;
         double chanceDeMutacao = 0.1;
-        int limiteDeGeracoes = 200;
+        int limiteDeGeracoes = 100;
         
         
         Fitness fitness = new Rastrigins(precisao);
         SelecaoAleatoria selecaoAleatoria = new MiniTorneio(tamanhoDoTorneio, fitness);
         Cruzamento cruzamento = new CruzamentoDeDoisPontos();
+        //Cruzamento cruzamento = new CruzamentoDePontoSimples();
         Mutacao mutacao = new MutacaoMultipla(porcentagemMaximaDeAlteracaoDoDNA);
         
+
+        int[] tamanhosDaPopulacao = {100, 500, 1000, 1500, 2000, 2500, 3000, 3500, 4000, 4500};
+        int[] minimosLocais = new int[tamanhosDaPopulacao.length];
+        int[] quantidadeDeGeracoes = new int[tamanhosDaPopulacao.length];
         
-        AlgoritmoGenetico algoritmo = new AlgoritmoGenetico(
+        int quantidadeDeTestes = 1;
+        
+        for(int t = 0; t < tamanhosDaPopulacao.length; t++) {
+            
+            String nome = (char)('A' + t) + "" + (char)('A' + t) + "" + (char)('A' + t) + "";
+            
+            AlgoritmoGenetico algoritmo = new AlgoritmoGenetico(
                                                             chanceDeCruzamento,
                                                             chanceDeMutacao,
                                                             limiteDeGeracoes,
@@ -68,17 +80,52 @@ public class Experimento {
                                                             selecaoAleatoria,
                                                             cruzamento,
                                                             mutacao,
-                                                            new EscritorDeExperimento("AAA")
+                                                            new EscritorDeExperimento(nome)
                                                             );
+            
+            
+            int tamanho = tamanhosDaPopulacao[t];
+            int quantidadeDeMinimosLocais = 0;
+            
+            System.out.print("Tamanho: " + tamanho + "\n[");
+            
+            for(int i = 0; i < quantidadeDeTestes; i++) {
+                
+                System.out.print(".");
+                
+                LinkedList<Cromossomo> populacao = gerarPopulacaoAleatoria(tamanho, 20);
+                Retorno retorno = algoritmo.gerarIndividuoApto(populacao);
+                Cromossomo individuo = retorno.individuo;
+
+                if(!(Math.abs(fitness.calcularFitness(individuo)) < precisao)) {
+                    quantidadeDeMinimosLocais++;
+                }
+                
+                quantidadeDeGeracoes[t] += retorno.quantidadeDeGeracoes;
+            }
+            
+            System.out.println("]");
+            
+            minimosLocais[t] = quantidadeDeMinimosLocais;
+            
+            System.out.println("Minimos locais: " + quantidadeDeMinimosLocais + " => " + (double)(quantidadeDeMinimosLocais) / quantidadeDeTestes + "\n");
+        }
         
-        for(int i = 0; i < 1; i++) {
-            LinkedList<Cromossomo> populacao = gerarPopulacaoAleatoria(4000, 20);
-
-            Cromossomo individuo = algoritmo.gerarIndividuoApto(populacao);
-
-            System.out.println(individuo + "(" + individuo.obterValorInteiroDoPrimeiro() + ", "
-                    + individuo.obterValorInteiroDoSegundo() + ") => " + fitness.calcularFitness(individuo) + "\n\n");
-
+        System.out.println("---- Sumario Geral ----");
+        System.out.println("precisao = " + precisao + "\n" +
+                           "tamanhoDoTorneio = " + tamanhoDoTorneio + "\n" +
+                           "porcentagemMaximaDeAlteracaoDoDNA = " + porcentagemMaximaDeAlteracaoDoDNA + "\n" +
+                           "chanceDeCruzamento = " + chanceDeCruzamento + "\n" +
+                           "chanceDeMutacao = " + chanceDeMutacao + "\n" +
+                           "limiteDeGeracoes = " + limiteDeGeracoes + "\n");
+        for(int i = 0; i < tamanhosDaPopulacao.length; i++) {
+            int tamanho = tamanhosDaPopulacao[i];
+            System.out.println("Tamanho: " + tamanho);
+            
+            double p = (double) minimosLocais[i] / quantidadeDeTestes;
+            double m = (double) quantidadeDeGeracoes[i] / quantidadeDeTestes;
+            System.out.println("\t% de erro: " + p);
+            System.out.println("\tMedia de geracoes: " + m + "\n");
         }
     }
     

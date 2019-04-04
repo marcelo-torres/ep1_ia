@@ -52,7 +52,6 @@ public class MiniTorneio implements SelecaoAleatoria {
             }
         }
             
-        melhorIndividuo.incrementarVezesSelecionado();
         return melhorIndividuo;
     }
 

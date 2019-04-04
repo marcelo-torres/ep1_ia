@@ -14,6 +14,17 @@ import java.util.Random;
 
 public class AlgoritmoGenetico {
     
+    public static class Retorno {
+    
+        public Cromossomo individuo;
+        public int quantidadeDeGeracoes;
+        
+        public Retorno(Cromossomo individuo, int quantidadeDeGeracoes) {
+            this.individuo = individuo;
+            this.quantidadeDeGeracoes = quantidadeDeGeracoes;
+        }
+    }
+    
     private final double CHANCE_DE_CRUZAMENTO;
     private final double CHANCE_DE_MUTACAO;
     private final int LIMITE_DE_GERACOES;
@@ -49,7 +60,7 @@ public class AlgoritmoGenetico {
         this.ESCRITOR = escritor;
     }
     
-    public Cromossomo gerarIndividuoApto(Collection<Cromossomo> populacao) {
+    public Retorno gerarIndividuoApto(Collection<Cromossomo> populacao) {
     
         this.ESCRITOR.iniciarEscrita();
         this.ESCRITOR.escrever("Geracao,Media,Melhor,\n");
@@ -100,7 +111,7 @@ public class AlgoritmoGenetico {
                 individuoMaisApto = individuoMaisAptoAtual;
             }
             
-            System.out.println(geracao + " - Melhor fitness: " + this.FITNESS.calcularFitness(individuoMaisAptoAtual));
+            //System.out.println(geracao + " - Melhor fitness: " + this.FITNESS.calcularFitness(individuoMaisAptoAtual));
             double mediaDosFitness = somaDosFitness / populacao.size();
             this.ESCRITOR.escrever(geracao + ", " + mediaDosFitness + "," + this.FITNESS.calcularFitness(individuoMaisAptoAtual) + ",\n");
         }
@@ -111,10 +122,10 @@ public class AlgoritmoGenetico {
             System.out.println("Erro - nao foi possivel fechar o arquivo: " + ioe.getMessage());
         }
         
-        System.out.println("Quantidade de geracoes: " + geracao + "\n"
-                         + "Quantidade de mutacoes: " + quantidadeDeMutacoes);
+        //System.out.println("Quantidade de geracoes: " + geracao + "\n"
+        //                 + "Quantidade de mutacoes: " + quantidadeDeMutacoes);
         
-        return individuoMaisApto;
+        return new Retorno(individuoMaisApto, geracao);
     }
     
     
